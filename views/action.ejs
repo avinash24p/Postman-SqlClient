@@ -1,0 +1,584 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Project-X</title>
+  <link rel="shortcut icon" href="icon/x.png">
+  <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+
+
+  <!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  -->
+
+  <script src="https://bootswatch.com/_vendor/popper.js/dist/umd/popper.min.js"></script>
+  <script src="https://bootswatch.com/_vendor/jquery/dist/jquery.min.js"></script>
+  <script src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- <base href="https://demos.telerik.com/kendo-ui/datetimepicker/rangeselection"> -->
+  <!-- <style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style> -->
+
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.common-material.min.css" />
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.material.min.css" />
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.3.1017/styles/kendo.material.mobile.min.css" />
+
+  <script src="https://kendo.cdn.telerik.com/2018.3.1017/js/jquery.min.js"></script>
+  <script src="https://kendo.cdn.telerik.com/2018.3.1017/js/kendo.all.min.js"></script>
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {box-sizing: border-box}
+        
+        /* Set height of body and the document to 100% */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial;
+        }
+        
+        /* Style tab links */
+        .tablink {
+            color: #002B36;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            font-size: 17px;
+            width: 50%;
+        }
+        
+        .tablink:hover {
+            background-color: #777;
+        }
+        
+        /* Style the tab content (and add height:100% for full page content) */
+        .tabcontent {
+            color: white;
+            display: none;
+            padding: 100px 20px;
+            height: 100%;
+        }
+
+        #status{
+          padding-left: 80%;
+        }
+
+        #commentPayload{
+          font:0.8rem;
+        }
+
+      
+     
+        
+        #SQL {background-color: ghostwhite;}
+        #API {background-color: ghostwhite;}
+        /* #Logs {background-color: ghostwhite;} */
+
+
+        /* #myDiv {
+    position:fixed;
+    top: 50%;
+    left: 50%;
+   
+} */
+
+#loading-image {
+   width: 30%;
+   height: 3%;
+   top: 50%;
+   left: 40%;
+   position: fixed;
+   opacity: 0.7;
+   background-color: #fff;
+   z-index: 99;
+   text-align: center;
+   margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+        </style>
+</head>
+
+<body class="loading">
+  <button class="tablink" onclick="openPage('SQL', this, 'ghostwhite')" id="defaultOpen">SQL</button>
+  <button class="tablink" onclick="openPage('API', this, 'ghostwhite')">API</button>
+  <!-- <button class="tablink" onclick="openPage('Logs', this, 'ghostwhite')">Log Analysis</button> -->
+  <div id="SQL" class="tabcontent">
+    <form role="form">
+      <div class="input-group mb-3">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="selection">Select DB</span><span class="caret"></span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a class="dropdown-item" href="#">DB1</a>
+            <a class="dropdown-item" href="#">DB2</a>
+            <a class="dropdown-item" href="#">DB3</a>
+            <a class="dropdown-item" href="#">DB4</a>
+          </div>
+        </div>
+        <input type="text" class="form-control" id="query" aria-label="Text input with dropdown button" placeholder="Your Query...">
+        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+
+    <div class="form-group" id="comment" style="overflow-x:auto; overflow-y:auto;">
+      <label for="comment" style="color:black">Result</label>
+      <!-- <textarea class="form-control" rows="20" id="comment" style="font-size: 0.8rem;">
+      </textarea> -->
+      <p id="comm"></p>
+
+    </div>
+  </div>
+
+  <div id="API" class="tabcontent">
+    <form role="form">
+      <div class="input-group mb-3">
+        <div class="btn-group-api">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="selection">Select Request</span><span class="caret"></span>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">GET</a>
+            <a class="dropdown-item" href="#">PUT</a>
+            <a class="dropdown-item" href="#">POST</a>
+            <a class="dropdown-item" href="#">DELETE</a>
+          </div>
+        </div>
+
+        <input type="text" class="form-control" id="baseURL" aria-label="Text input with dropdown button" placeholder="URL ...">
+        <button type="submit" id="submitAPI" class="btn btn-primary">SEND</button>
+
+
+      </div>
+      <div class="form-group">
+        <label for="input" style="color:black">Headers</label>
+        <input type="text" class="form-control" id="headers" aria-label="Text input with dropdown button" placeholder="Headers ...">
+      </div>
+      <div class="form-group">
+        <label for="comment" style="color:black">Payload/Response</label>
+        <label id="status" style="color:green">Status : </label>
+        <textarea class="form-control" rows="20" id="commentPayload" style="font-size:0.8rem;"></textarea>
+
+
+      </div>
+    </form>
+  </div>
+
+  <!-- <div id="Logs" class="tabcontent">
+
+    <div id="example">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">Start Date</span>
+        </div>
+        <input type="datetime" id="start" onkeydown="return false" class="form-control" aria-label="Default" style="width: 30%;" />
+
+        
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default">End Date</span>
+        </div>
+        <input type="datetime" id="end" onkeydown="return false" class="form-control" aria-label="Default" style="width: 30% " />
+
+      </div>
+
+      <div class="form-group">
+        <div class="custom-control custom-radio">
+          <input type="radio" id="pumaRadio" name="customRadio" value="pumaRadio" class="custom-control-input" checked="">
+          <label class="custom-control-label" for="pumaRadio" style="color: black">Puma</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input type="radio" id="coracleRadio" name="customRadio" value="coracleRadio" class="custom-control-input">
+          <label class="custom-control-label" for="coracleRadio" style="color: black">Coracle</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input type="radio" id="APACERadio" name="customRadio" value="APACERadio" class="custom-control-input">
+          <label class="custom-control-label" for="APACERadio" style="color: black">APACE</label>
+        </div>
+        <br>
+
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="puma" value="puma" checked="false">
+          <label class="custom-control-label" for="puma" style="color: black">Puma</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="amazon" value="amazon" checked="">
+          <label class="custom-control-label" for="amazon" style="color: black">Amazon</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="myntra" value="myntra" checked="">
+          <label class="custom-control-label" for="myntra" style="color: black">Myntra</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="paytm" value="paytm" checked="">
+          <label class="custom-control-label" for="paytm" style="color: black">Paytm</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="flipkart" value="flipkart" checked="">
+          <label class="custom-control-label" for="flipkart" style="color: black">Flipkart</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">SKU</span>
+      </div>
+      <input type="text" id="sku" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3">
+
+      <input class="btn btn-primary" id="submitLog" type="submit" value="Submit">
+
+    </div>
+   
+    <div class="form-group" id="commentLogs" style="overflow-x:auto; overflow-y:auto; background-color: ghostwhite; color: black; font-size: small;">
+    </div>
+  </div> -->
+  </div>
+
+
+
+  <img id="loading-image" src="../images/ajax-loader.gif" style="display: none;" alt="Loading..." />
+
+
+  <script>
+    window.onbeforeunload = function () {
+      return "Data will be lost if you leave the page, are you sure?";
+    };
+
+    $(document).bind("ajaxSend", function () {
+      //  $("#loading-image").show(); 
+      //  $("body").css('display','none')
+      $("body").css("opacity", 0.2);
+      $("#loading-image").show();
+
+    }).bind("ajaxComplete", function () {
+      $("#loading-image").hide();
+      $("body").css("opacity", '');
+
+    });
+
+    //if($('#pumaRadio').is(':checked')) { alert("it's checked"); }
+    // $('#pumaRadio').click(function () {
+    //   $('#puma').removeAttr("disabled");
+    //   $('#puma').prop('checked', true);
+    //   console.log('puma')
+    // })
+
+    // $('#coracleRadio').click(function () {
+    //   //  $('#puma').attr("checked", false);
+    //   $('#puma').attr("checked", false);
+    //   $('#puma').attr("disabled", true);
+    //   console.log('coracle')
+    // })
+
+    // $('#APACERadio').click(function () {
+    //   //  $('#puma').attr("checked", false);
+    //   $('#puma').attr("checked", false);
+    //   $('#puma').attr("disabled", true);
+    //   console.log('APACE')
+    // })
+
+    // function startChange() {
+    //   var startDate = start.value(),
+    //     endDate = end.value();
+
+    //   if (startDate) {
+    //     startDate = new Date(startDate);
+    //     startDate.setDate(startDate.getDate());
+    //     end.min(startDate);
+    //   } else if (endDate) {
+    //     start.max(new Date(endDate));
+    //   } else {
+    //     endDate = new Date();
+    //     start.max(endDate);
+    //     end.min(endDate);
+    //   }
+    // }
+
+    // function endChange() {
+    //   var endDate = end.value(),
+    //     startDate = start.value();
+
+    //   if (endDate) {
+    //     endDate = new Date(endDate);
+    //     endDate.setDate(endDate.getDate());
+    //     start.max(endDate);
+    //   } else if (startDate) {
+    //     end.min(new Date(startDate));
+    //   } else {
+    //     endDate = new Date();
+    //     start.max(endDate);
+    //     end.min(endDate);
+    //   }
+    // }
+
+    // var today = kendo.date.today();
+
+    // var start = $("#start").kendoDateTimePicker({
+    //   timeFormat: "HH:mm",
+    //   format: "dd-MM-yyyy HH:00",
+    //   value: today,
+    //   change: startChange,
+    //   parseFormats: ["dd-MM-yyyy hh:00"]
+    // }).data("kendoDateTimePicker");
+
+    // var end = $("#end").kendoDateTimePicker({
+    //   timeFormat: "HH:mm",
+    //   format: "dd-MM-yyyy HH:00",
+    //   value: today,
+    //   change: endChange,
+    //   parseFormats: ["dd-MM-yyyy hh:00"]
+    // }).data("kendoDateTimePicker");
+
+    // start.max(end.value());
+    // end.min(start.value());
+
+
+    // $("#submitLog").click(function () {
+    //   console.log(start._oldText)
+    //   console.log(end._oldText)
+
+    //   //get input field values
+    //   var sku = $('#sku').val();
+    //   console.log(sku.length)
+    //   // var end = $('#end').val();
+
+
+    //   var myCheckboxes = new Array();
+    //   $("input:checked").each(function () {
+    //     myCheckboxes.push($(this).val());
+    //   });
+
+
+    //   if (start._oldText !== end._oldText && myCheckboxes.length > 1 ) {
+    //     console.log('Match')
+    //     console.log(myCheckboxes)
+    //     $('#loading-image').show();
+    //   } else {
+    //     alert('Invalid SKU/ Invalid Date Range/ Invalid MP')
+    //     return;
+    //   }
+
+    //   event.preventDefault(); // using this page stop being refreshing 
+
+    //   $.ajax({
+    //     type: 'POST',
+    //     url: '/',
+    //     cache: true,
+    //     async: true,
+    //     data: 'active=' + 'log' + '&sku=' + sku + '&start=' + start._oldText + '&end=' + end._oldText +
+    //       '&myCheckboxes=' + myCheckboxes,
+    //     jsonpCallback: 'callback',
+    //     success: function (data) {
+
+    //       data = (sku.length===0)?data:data.replace(new RegExp(sku, 'g'), "<span style='color:red;font-weight:bold'>" + sku +
+    //         "</span>")
+    //       $('#loading').hide();
+    //       //  $("#comment").val("");
+    //       //console.log('form was submitted', data);
+    //       // var html =
+    //       //   '<a class="btn btn-primary" href="./append4.log" download role="download">Download Log</a>';
+    //       //   $('#commentLogs').css('border', '0.5px solid grey'); 
+    //       $('#commentLogs').html(data);
+    //       console.log('done')
+    //     },
+    //     error: function (result) {
+    //       console.log('Error', result)
+    //       console.log('error')
+    //       var html = '<p>Error in log request</p>';
+    //       $('#dwnld').html(html);
+    //     }
+    //   });
+
+    // });
+
+    // $("div.dropdown-menu a").click(function () {
+    //   alert(this.name);
+    // });
+
+    $(".dropdown-menu a").click(function () {
+
+      $(this).parents(".btn-group").find('.selection').text($(this).text());
+      $(this).parents(".btn-group").find('.selection').val($(this).text());
+
+      console.log($(".btn-group").find('.selection')[0].innerHTML)
+
+      if ($(".btn-group").find('.selection')[0].innerHTML === "Select DB") {
+        $("#submit").attr("disabled", "disabled");
+      } else {
+        $("#submit").removeAttr("disabled");
+      }
+    });
+
+    $(document).ready(function () {
+      if ($(".btn-group").find('.selection')[0].innerHTML === "Select DB") {
+        $("#submit").attr("disabled", "disabled");
+      } else {
+        $("#submit").removeAttr("disabled");
+      }
+    });
+
+
+    $(function () {
+      $("#submit").click(function () {
+        $('#comment').html("");
+        //get input field values
+        var sql = $('#query').val();
+        var dbSelect = $(".btn-group").find('.selection')[0].innerHTML;
+
+        event.preventDefault(); // using this page stop being refreshing 
+
+        $.ajax({
+          type: 'POST',
+          url: '/',
+          cache: false,
+          dataType: 'json',
+          data: 'active=' + 'dbs' + '&sql=' + sql + '&dbSelect=' + dbSelect,
+          jsonpCallback: 'callback',
+          success: function (data) {
+            //  $("#comment").val("");
+            console.log('form was submitted', data);
+
+            if (JSON.stringify(data).includes('syntax') || JSON.stringify(data).includes('exist')) {
+              console.log('Error')
+              var html = '<p style="color:black"><pre>' + JSON.stringify(data, undefined, 2) +
+                '<pre></p>';
+              $('#comment').html(html);
+            } else {
+              var html = '<table class="table table-striped" style="font-size: 0.7rem">';
+              html += '<tr>';
+              var flag = 0;
+              $.each(data[0], function (index, value) {
+                html += '<th>' + index + '</th>';
+              });
+              html += '</tr>';
+              $.each(data, function (index, value) {
+                html += '<tr>';
+                $.each(value, function (index2, value2) {
+                  html += '<td>' + value2 + '</td>';
+                });
+                html += '<tr>';
+              });
+              html += '</table>';
+              $('#comment').html(html);
+            }
+          },
+          error: function (result) {
+            console.log('Error', result)
+            $('#comment').html(JSON.stringify(result));
+          }
+        });
+
+      });
+    });
+
+
+
+
+    //function to submit api
+
+
+    $(".dropdown-menu a").click(function () {
+
+      $(this).parents(".btn-group-api").find('.selection').text($(this).text());
+      $(this).parents(".btn-group-api").find('.selection').val($(this).text());
+
+      console.log($(".btn-group-api").find('.selection')[0].innerHTML)
+
+      if ($(".btn-group-api").find('.selection')[0].innerHTML === "Select Request") {
+        $("#submitAPI").attr("disabled", "disabled");
+      } else {
+        $("#submitAPI").removeAttr("disabled");
+      }
+    });
+
+    $(document).ready(function () {
+      if ($(".btn-group-api").find('.selection')[0].innerHTML === "Select Request") {
+        $("#submitAPI").attr("disabled", "disabled");
+      } else {
+        $("#submitAPI").removeAttr("disabled");
+      }
+    });
+
+    $(function () {
+      $("#submitAPI").click(function () {
+        // $('#comment').html("");
+        //  document.getElementById('comment').value='';
+
+        //get input field values
+        var baseURL = $('#baseURL').val();
+        var headers = $('#headers').val();
+        var method = $(".btn-group-api").find('.selection')[0].innerHTML;
+        var body = $('#commentPayload').val();
+
+
+        console.log('body', body);
+        event.preventDefault(); // using this page stop being refreshing 
+
+        $.ajax({
+          type: 'POST',
+          url: '/',
+          cache: false,
+          dataType: (headers.includes('json')) ? 'json' : '',
+          data: 'active=' + 'api' + '&baseURL=' + baseURL + '&headers=' + headers + '&method=' + method +
+            '&body=' + body,
+
+          jsonpCallback: 'callback',
+          success: function (data, textStatus, jqXHR) {
+            console.log('Headers', jqXHR)
+            console.log('form was submitted', JSON.stringify(data));
+
+            $('#commentPayload').val(JSON.stringify(data, undefined, 2));
+            $('#status').html(jqXHR.status + ' ' + jqXHR.statusText);
+          },
+          error: function (request, status, error) {
+            console.log(request.status)
+            console.log(status)
+            console.log(error)
+            // $('#commentPayload').val(JSON.stringify(request.responseText, undefined, 2));
+            $('#commentPayload').val('Error');
+            $('#status').html(request.status + ' ' + error);
+          }
+        });
+
+      });
+    });
+
+
+    function openPage(pageName, elmnt, color) {
+      // Hide all elements with class="tabcontent" by default */
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+
+      // Remove the background color of all tablinks/buttons
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+      }
+
+      // Show the specific tab content
+      document.getElementById(pageName).style.display = "block";
+
+      // Add the specific color to the button used to open the tab content
+      elmnt.style.backgroundColor = color;
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+  </script>
+
+</body>
+
+</html>
